@@ -13,23 +13,31 @@ class TripLocalDataSourceImpl implements TripLocalDataSource {
   }
 
   @override
-  Future<Trip?> getTrip(int key) async {
-    return box.get(key);
+  Future<Trip?> getTrip(String id) async {
+    try {
+      return box.get(id);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<Trip> createTrip(Trip trip) async {
-    final key = await box.add(trip);
-    return box.get(key)!;
+    await box.put(trip.id, trip);
+    return trip;
   }
 
   @override
   Future<void> updateTrip(Trip trip) async {
-    await trip.save();
+    await box.put(trip.id, trip);
   }
 
   @override
-  Future<void> deleteTrip(int key) async {
-    await box.delete(key);
+  Future<void> deleteTrip(String id) async {
+    try {
+      await box.delete(id);
+    } catch (e) {
+      // Trip not found, ignore
+    }
   }
 }

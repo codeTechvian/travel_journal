@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:travel_journal/core/hive_registry.dart';
+import 'package:travel_journal/core/theme.dart';
 import 'package:travel_journal/models/trip.dart';
+import 'package:travel_journal/models/entry.dart';
+import 'package:travel_journal/presentation/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   await registerHiveAdapters();
-  await Hive.openBox<Trip>('trips');
 
-  runApp(const MyApp());
+  // Open Hive boxes
+  await Hive.openBox<Trip>('trips');
+  await Hive.openBox<Entry>('entries');
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      title: 'Travel Journal',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: const Center(child: Text('Travel Journal — data layer ready')),
-      ),
+      theme: AppTheme.lightTheme,
+      home: const MainScreen(),
     );
   }
 }

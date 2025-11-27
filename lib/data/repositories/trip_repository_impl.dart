@@ -20,9 +20,9 @@ class TripRepositoryImpl implements TripRepository {
   }
 
   @override
-  Future<Either<Failure, Trip?>> getTrip(int key) async {
+  Future<Either<Failure, Trip?>> getTrip(String id) async {
     try {
-      final res = await local.getTrip(key);
+      final res = await local.getTrip(id);
       return Right(res);
     } catch (e) {
       return Left(Failure(e.toString()));
@@ -50,9 +50,9 @@ class TripRepositoryImpl implements TripRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteTrip(int key) async {
+  Future<Either<Failure, void>> deleteTrip(String id) async {
     try {
-      await local.deleteTrip(key);
+      await local.deleteTrip(id);
       return const Right(null);
     } catch (e) {
       return Left(Failure(e.toString()));

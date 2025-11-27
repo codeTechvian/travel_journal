@@ -17,27 +17,30 @@ class TripAdapter extends TypeAdapter<Trip> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Trip(
-      title: fields[0] as String,
-      startDate: fields[1] as DateTime,
-      endDate: fields[2] as DateTime,
-      description: fields[3] as String,
-      entries: (fields[4] as List?)?.cast<Entry>(),
+      id: fields[0] as String,
+      title: fields[1] as String,
+      startDate: fields[2] as DateTime,
+      endDate: fields[3] as DateTime,
+      description: fields[4] as String,
+      entries: (fields[5] as List?)?.cast<Entry>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Trip obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.title)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.startDate)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.endDate)
+      ..write(obj.startDate)
       ..writeByte(3)
-      ..write(obj.description)
+      ..write(obj.endDate)
       ..writeByte(4)
+      ..write(obj.description)
+      ..writeByte(5)
       ..write(obj.entries);
   }
 

@@ -1,26 +1,30 @@
 import 'package:hive/hive.dart';
 import 'entry.dart';
 
-part 'trip.g.dart';
+part 'trip.g.dart'; // MUST BE HERE
 
 @HiveType(typeId: 0)
 class Trip extends HiveObject {
   @HiveField(0)
-  String title;
+  String id; // UNIQUE ID for CRUD
 
   @HiveField(1)
-  DateTime startDate;
+  String title;
 
   @HiveField(2)
-  DateTime endDate;
+  DateTime startDate;
 
   @HiveField(3)
-  String description;
+  DateTime endDate;
 
   @HiveField(4)
+  String description;
+
+  @HiveField(5)
   List<Entry> entries;
 
   Trip({
+    required this.id,
     required this.title,
     required this.startDate,
     required this.endDate,
@@ -32,6 +36,7 @@ class Trip extends HiveObject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Trip &&
+          id == other.id &&
           title == other.title &&
           startDate == other.startDate &&
           endDate == other.endDate &&
@@ -48,6 +53,7 @@ class Trip extends HiveObject {
 
   @override
   int get hashCode => Object.hash(
+    id,
     title,
     startDate,
     endDate,

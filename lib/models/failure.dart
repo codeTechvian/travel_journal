@@ -1,6 +1,6 @@
 class Failure {
   final String message;
-  Failure(this.message);
+  const Failure(this.message); // make constructor const
 
   @override
   bool operator ==(Object other) =>

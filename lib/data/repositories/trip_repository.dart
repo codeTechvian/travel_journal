@@ -4,8 +4,8 @@ import '../../models/failure.dart';
 
 abstract class TripRepository {
   Future<Either<Failure, List<Trip>>> getAllTrips();
-  Future<Either<Failure, Trip?>> getTrip(int key);
+  Future<Either<Failure, Trip?>> getTrip(String id);
   Future<Either<Failure, Trip>> createTrip(Trip trip);
   Future<Either<Failure, void>> updateTrip(Trip trip);
-  Future<Either<Failure, void>> deleteTrip(int key);
+  Future<Either<Failure, void>> deleteTrip(String id);
 }
