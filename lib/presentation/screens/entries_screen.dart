@@ -58,7 +58,7 @@ class EntriesScreen extends ConsumerWidget {
                   subtitle: Text(entry.date.toString().split(' ')[0]),
                   trailing: const Text(
                       '>'), // Using text instead of icon to avoid rendering issues
-                  onTap: () => _showEntryDetails(context, entry),
+                  onTap: () => _showEntryDetails(context, entry, box),
                 ),
               );
             },
@@ -111,6 +111,11 @@ class EntriesScreen extends ConsumerWidget {
                   );
                   await box.add(entry);
                   Navigator.pop(context);
+                  // Refresh the screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const EntriesScreen()),
+                  );
                 }
               },
               child: const Text('Save'),
@@ -121,7 +126,7 @@ class EntriesScreen extends ConsumerWidget {
     );
   }
 
-  void _showEntryDetails(BuildContext context, Entry entry) {
+  void _showEntryDetails(BuildContext context, Entry entry, Box<Entry> box) {
     showDialog(
       context: context,
       builder: (context) {
@@ -143,6 +148,94 @@ class EntriesScreen extends ConsumerWidget {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Close'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _editEntry(context, entry, box);
+              },
+              child: const Text('Edit'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteEntry(context, entry, box);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editEntry(BuildContext context, Entry entry, Box<Entry> box) {
+    final notesController = TextEditingController(text: entry.notes);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Entry'),
+          content: TextField(
+            controller: notesController,
+            decoration: const InputDecoration(
+              labelText: 'Notes',
+              hintText: 'Write your journal entry here...',
+            ),
+            maxLines: 3,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (notesController.text.trim().isNotEmpty) {
+                  entry.notes = notesController.text.trim();
+                  entry.date = DateTime.now(); // Update the date
+                  await entry.save(); // Save the updated entry
+                  Navigator.pop(context);
+                  // Refresh the screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const EntriesScreen()),
+                  );
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteEntry(BuildContext context, Entry entry, Box<Entry> box) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Entry'),
+          content: const Text('Are you sure you want to delete this entry?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await box.delete(entry.key); // Delete the entry
+                Navigator.pop(context); // Close confirmation dialog
+                Navigator.pop(context); // Close details dialog
+                // Refresh the screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EntriesScreen()),
+                );
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
